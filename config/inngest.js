@@ -1,6 +1,7 @@
 import { Inngest } from "inngest";
 import connectDb from "./db";
-import {User} from "@/models/user";
+import User from "@/models/user.js";
+
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "quickcart-next" });
@@ -13,10 +14,10 @@ export const syncUserCreation=inngest.createFunction(
   },
 {event:'clerk/user.created'},
 async({event})=>{
-const { id,first_name,last_name,email_adresses,image_url}= event.data
+const { id,first_name,last_name,email_addresses,image_url}= event.data
 const userData={
     _id:id,
-    email:email_adresses[0].email_address,
+    email:email_addresses[0].email_address,
     name:first_name+ ''+last_name,
     imageUrl:image_url
 
@@ -33,16 +34,16 @@ export const syncUserUpdation=inngest.createFunction({
 },
 {event:'clerk/user.updated'},
 async({event})=>{
-    const { id,first_name,last_name,email_adresses,image_url}= event.data
+    const { id,first_name,last_name,email_addresses,image_url}= event.data
     const userData={
         _id:id,
-        email:email_adresses[0].email_address,
-        name:first_name+ ''+last_name,
+        email:email_addresses[0].email_address,
+        name:first_name+ ' ' +last_name,
         imageUrl:image_url
     
     }
     await connectDb()
-    await User.findByIdAndUpdate(id,userData,)
+    await User.findByIdAndUpdate(id,userData)
 })
 
 //inggest function to delete
@@ -52,10 +53,10 @@ export const syncUserDeletion=inngest.createFunction({
 },
 {event:'clerk/user.deleted'},
 async({event})=>{
-    const { id,first_name,last_name,email_adresses,image_url}= event.data
+    const { id,first_name,last_name,email_addresses,image_url}= event.data
     const userData={
         _id:id,
-        email:email_adresses[0].email_address,
+        email:email_addresses[0].email_address,
         name:first_name+ ''+last_name,
         imageUrl:image_url
     
