@@ -62,6 +62,6 @@ async({event})=>{
     
     }
     await connectDb()
-    await User.findByIdAndDelete(id)
+    await User.findOneAndDelete({ _id: id });
 }
 )
