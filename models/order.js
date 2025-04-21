@@ -9,7 +9,6 @@ const ordersSchema = new mongoose.Schema({
     },
   ],
   amount: { type: Number, required: true },
-  address: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "address" }, // 🔧 Fixed spelling + type
   status: { type: String, required: true, default: "Order Placed" },
   date: { type: Number, required: true },
 });
