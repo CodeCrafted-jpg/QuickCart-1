@@ -7,10 +7,9 @@ import { NextResponse } from "next/server";
 export async function POST(request) {
   try {
     const { userId } = getAuth(request);
-    console.log(userId)
-    const { adresses,items } = await request.json();
+    const { address, items } = await request.json(); // ✅ fixed spelling
 
-    if ( items.length === 0) {
+    if (!items || items.length === 0) {
       return NextResponse.json({ success: false, message: "No items provided" });
     }
 
@@ -19,18 +18,18 @@ export async function POST(request) {
 
     for (const item of items) {
       const product = await Product.findById(item.product);
-      if (!product) continue; // Skip invalid products
+      if (!product) continue;
       amount += product.offerPrice * item.quantity;
     }
 
     const totalAmount = amount + Math.floor(amount * 0.02); // Add tax (2%)
 
-    // Send order to Inngest
+    // Send event to Inngest
     await inngest.send({
       name: "order/created",
       data: {
         userId,
-        adresses,
+        address,
         items,
         amount: totalAmount,
         date: Date.now(),
