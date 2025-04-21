@@ -12,6 +12,8 @@ const OrderSummary = () => {
     getCartAmount,
     getToken,
     cartItems,
+    user,
+    setCartItems
   } = useAppContext();
 
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -19,7 +21,18 @@ const OrderSummary = () => {
   const [userAddresses, setUserAddresses] = useState([]);
 
   const fetchUserAddresses = async () => {
-    setUserAddresses(addressDummyData);
+    try {
+      const token=await getToken()
+      const{data}=await axios.get("/api/user/get-adress",{headers:{Authorization:`Bearer${token}`}})
+      if(data.success){
+        setUserAddresses(data.adresses)
+        if(data.adresses.length>0){
+          setSelectedAddress(data.adresses[0])
+        }
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
   };
 
   const handleAddressSelect = (address) => {
@@ -67,8 +80,9 @@ const OrderSummary = () => {
   };
 
   useEffect(() => {
-    fetchUserAddresses();
-  }, []);
+    if(user){fetchUserAddresses()}
+    
+  }, [user]);
 
   const taxAmount = Math.floor(getCartAmount() * 0.02);
   const totalAmount = getCartAmount() + taxAmount;

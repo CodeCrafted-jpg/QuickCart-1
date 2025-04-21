@@ -7,9 +7,10 @@ import { NextResponse } from "next/server";
 export async function POST(request) {
   try {
     const { userId } = getAuth(request);
-    const { items } = await request.json();
+    console.log(userId)
+    const { adress,items } = await request.json();
 
-    if (!items || items.length === 0) {
+    if ( items.length === 0) {
       return NextResponse.json({ success: false, message: "No items provided" });
     }
 
@@ -29,6 +30,7 @@ export async function POST(request) {
       name: "order/created",
       data: {
         userId,
+        adress,
         items,
         amount: totalAmount,
         date: Date.now(),
