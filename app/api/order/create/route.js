@@ -8,7 +8,7 @@ export async function POST(request) {
   try {
     const { userId } = getAuth(request);
     console.log(userId)
-    const { adress,items } = await request.json();
+    const { adresses,items } = await request.json();
 
     if ( items.length === 0) {
       return NextResponse.json({ success: false, message: "No items provided" });
@@ -30,7 +30,7 @@ export async function POST(request) {
       name: "order/created",
       data: {
         userId,
-        adress,
+        adresses,
         items,
         amount: totalAmount,
         date: Date.now(),
